@@ -23,4 +23,7 @@ openports -k 3000      # Kill process on port 3000
 ```
 
 Perfect for developers, DevOps engineers, and anyone who needs to understand their system's network activity.
-       
+
+
+![PyPI downloads](https://img.shields.io/pypi/dm/openports)
+
