@@ -1,0 +1,3 @@
+[console_scripts]
+list-ports = openports.cli:main
+openports = openports.cli:main

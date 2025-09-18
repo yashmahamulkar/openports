@@ -1,0 +1,12 @@
+LICENSE
+README.md
+setup.py
+openports/__init__.py
+openports/cli.py
+openports.egg-info/PKG-INFO
+openports.egg-info/SOURCES.txt
+openports.egg-info/dependency_links.txt
+openports.egg-info/entry_points.txt
+openports.egg-info/not-zip-safe
+openports.egg-info/requires.txt
+openports.egg-info/top_level.txt

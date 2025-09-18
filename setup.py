@@ -34,7 +34,7 @@ openports -k 3000      # Kill process on port 3000
 Perfect for developers, DevOps engineers, and anyone who needs to understand their system's network activity.
         """
 
-VERSION = '1.0.0'
+VERSION = '0.0.3'
 DESCRIPTION = '🔍⚡ Lightning-fast port scanner and process manager'
 LONG_DESCRIPTION = read_readme()
 
