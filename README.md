@@ -1,4 +1,6 @@
 
+![OpenPorts](assets/banner.svg)
+
 # OpenPorts 🔍⚡
 
 **Lightning-fast port scanner and process manager for developers**
@@ -19,8 +21,20 @@ pip install openports
 openports              # List all listening ports
 openports -p 3000      # Check specific port
 openports -s react     # Find React processes
-openports -k 3000      # Kill process on port 3000
+openports -a           # Include non-listening connections
+openports -k 3000      # Kill processes on port 3000
+openports -k 3000 -y   # Kill without the confirmation prompt
 ```
+
+## Output formats
+```bash
+openports --json       # Machine-readable JSON (pipe-clean stdout)
+openports --csv        # CSV output
+openports -v           # Show full command lines in the table
+```
+
+`--json` and `--csv` write only data to stdout; status messages go to stderr, so
+they pipe cleanly into other tools (e.g. `openports --json | jq '.[].port'`).
 
 Perfect for developers, DevOps engineers, and anyone who needs to understand their system's network activity.
 
