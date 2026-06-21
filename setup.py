@@ -1,5 +1,16 @@
 from setuptools import setup, find_packages
 import os
+import re
+
+
+def read_version():
+    here = os.path.dirname(__file__)
+    with open(os.path.join(here, "openports", "__init__.py"), encoding="utf-8") as fh:
+        match = re.search(r'^__version__\s*=\s*"([^"]+)"', fh.read(), re.MULTILINE)
+    if not match:
+        raise RuntimeError("Unable to find __version__ in openports/__init__.py")
+    return match.group(1)
+
 
 # Read README for long description
 def read_readme():
@@ -34,7 +45,7 @@ openports -k 3000      # Kill process on port 3000
 Perfect for developers, DevOps engineers, and anyone who needs to understand their system's network activity.
         """
 
-VERSION = '0.0.3'
+VERSION = read_version()
 DESCRIPTION = '🔍⚡ Lightning-fast port scanner and process manager'
 LONG_DESCRIPTION = read_readme()
 
