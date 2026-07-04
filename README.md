@@ -40,4 +40,4 @@ Perfect for developers, DevOps engineers, and anyone who needs to understand the
 
 
 ![PyPI downloads](https://img.shields.io/pypi/dm/openports)
-
+[![PyPI Downloads](https://static.pepy.tech/personalized-badge/openports?period=total&units=INTERNATIONAL_SYSTEM&left_color=BLACK&right_color=GREEN&left_text=downloads)](https://pepy.tech/projects/openports)
