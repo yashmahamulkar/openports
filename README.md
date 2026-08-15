@@ -36,6 +36,22 @@ openports -v           # Show full command lines in the table
 `--json` and `--csv` write only data to stdout; status messages go to stderr, so
 they pipe cleanly into other tools (e.g. `openports --json | jq '.[].port'`).
 
+## Docker (Optional)
+
+Run OpenPorts in a container (works on ARM64/Raspberry Pi and AMD64):
+
+```bash
+# Build the image
+docker build -t openports .
+
+# Run it
+docker run --rm --network host openports
+docker run --rm --network host openports -p 3000
+docker run --rm --network host openports --json | jq '.[].port'
+```
+
+The `--network host` flag is required for the container to see your host's network connections.
+
 Perfect for developers, DevOps engineers, and anyone who needs to understand their system's network activity.
 
 

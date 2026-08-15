@@ -16,6 +16,10 @@ try:
     HAS_PSUTIL = True
 except ImportError:
     HAS_PSUTIL = False
+    # Create a stub for psutil so it can be mocked in tests
+    class _PsutilStub:
+        pass
+    psutil = _PsutilStub()
 
 
 _ENTRY_KEYS = ("port", "pid", "proto", "status", "name", "cmdline",
@@ -244,10 +248,13 @@ class PortScanner:
         seen = set()
         for line in output.splitlines():
             parts = line.split()
-            if len(parts) < 5 or parts[0] not in ("TCP", "UDP"):
+            # UDP has fewer columns than TCP
+            min_cols = 4 if parts[0] == "UDP" else 5
+            if len(parts) < min_cols or parts[0] not in ("TCP", "UDP"):
                 continue
             proto = parts[0]
-            state = parts[3] if proto == "TCP" else "UDP"
+            # UDP lines may have fewer columns - handle safely
+            state = parts[3] if proto == "TCP" and len(parts) > 3 else "UDP"
             if not show_all and state != "LISTENING":
                 continue
             try:
