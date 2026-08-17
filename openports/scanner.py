@@ -23,7 +23,29 @@ except ImportError:
 
 
 _ENTRY_KEYS = ("port", "pid", "proto", "status", "name", "cmdline",
-               "user", "memory", "threads")
+               "user", "memory", "threads", "service")
+
+
+# Common port-to-service mapping
+_SERVICES = {
+    21: "ftp",
+    22: "ssh",
+    25: "smtp",
+    53: "dns",
+    80: "http",
+    443: "https",
+    3306: "mysql",
+    5432: "postgresql",
+    6379: "redis",
+    9200: "elasticsearch",
+    11211: "memcached",
+    27017: "mongodb",
+}
+
+
+def detect_service(port: int) -> str:
+    """Detect service name from port number."""
+    return _SERVICES.get(port, "unknown")
 
 
 _KILL_ERRORS = (OSError, subprocess.SubprocessError)
@@ -198,6 +220,7 @@ class PortScanner:
                 "user": info["user"],
                 "memory": info["memory"],
                 "threads": info["threads"],
+                "service": detect_service(port),
             })
         return sorted(results, key=lambda e: (e["port"], e["status"] != "LISTENING"))
 
@@ -278,6 +301,7 @@ class PortScanner:
                 "name": info["name"], "cmdline": info["cmdline"],
                 "user": info["user"], "memory": info["memory"],
                 "threads": info["threads"],
+                "service": detect_service(port),
             })
         return sorted(entries, key=lambda e: e["port"])
 
@@ -332,6 +356,7 @@ class PortScanner:
                 "port": port, "pid": pid, "proto": "TCP", "status": status,
                 "name": command, "cmdline": info["cmdline"],
                 "user": "Unknown", "memory": "N/A", "threads": "N/A",
+                "service": detect_service(port) if port is not None else "unknown",
             })
         return sorted(entries, key=lambda e: e["port"] or 0)
 

@@ -38,6 +38,7 @@ def _render_rich(entries: List[Dict[str, Any]], verbose: bool) -> None:
     table = Table(show_header=True, header_style="bold magenta")
     table.add_column("Port", justify="center", style="cyan", width=8)
     table.add_column("Proto", justify="center", style="green", width=6)
+    table.add_column("Service", style="blue", width=15)
     table.add_column("Process", style="white", width=25)
     table.add_column("PID", justify="center", style="yellow", width=8)
     table.add_column("Memory", justify="right", style="magenta", width=10)
@@ -50,6 +51,7 @@ def _render_rich(entries: List[Dict[str, Any]], verbose: bool) -> None:
         table.add_row(
             port_text,
             entry.get("proto", "TCP"),
+            entry.get("service", "unknown"),
             (entry.get("name") or "Unknown")[:25],
             str(entry.get("pid", "")),
             entry.get("memory", "N/A"),
@@ -60,15 +62,16 @@ def _render_rich(entries: List[Dict[str, Any]], verbose: bool) -> None:
 
 
 def _render_plain(entries: List[Dict[str, Any]], verbose: bool) -> None:
-    header = "{:>6} | {:>6} | {:>12} | {:>25} | {:>8} | {:>10}".format(
-        "Port", "Proto", "Status", "Process", "PID", "Memory")
+    header = "{:>6} | {:>6} | {:>15} | {:>12} | {:>25} | {:>8} | {:>10}".format(
+        "Port", "Proto", "Service", "Status", "Process", "PID", "Memory")
     print("-" * len(header))
     print(header)
     print("-" * len(header))
     for entry in entries:
-        line = "{:>6} | {:>6} | {:>12} | {:>25} | {:>8} | {:>10}".format(
+        line = "{:>6} | {:>6} | {:>15} | {:>12} | {:>25} | {:>8} | {:>10}".format(
             entry.get("port", ""),
             entry.get("proto", "TCP"),
+            entry.get("service", "unknown"),
             entry.get("status", "UNKNOWN"),
             (entry.get("name") or "Unknown")[:25],
             entry.get("pid", ""),
