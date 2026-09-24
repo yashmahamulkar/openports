@@ -16,6 +16,7 @@ try:
     HAS_PSUTIL = True
 except ImportError:
     HAS_PSUTIL = False
+    psutil = None
 
 
 _ENTRY_KEYS = ("port", "pid", "proto", "status", "name", "cmdline",
