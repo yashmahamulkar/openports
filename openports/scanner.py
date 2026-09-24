@@ -244,7 +244,10 @@ class PortScanner:
         seen = set()
         for line in output.splitlines():
             parts = line.split()
-            if len(parts) < 5 or parts[0] not in ("TCP", "UDP"):
+            if not parts or parts[0] not in ("TCP", "UDP"):
+                continue
+            min_cols = 5 if parts[0] == "TCP" else 4
+            if len(parts) < min_cols:
                 continue
             proto = parts[0]
             state = parts[3] if proto == "TCP" else "UDP"
