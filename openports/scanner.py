@@ -63,7 +63,13 @@ class PortScanner:
             return []
         for line in output.splitlines():
             parts = line.split()
-            if len(parts) >= 5 and parts[1].endswith(":" + str(port)):
+            if not parts or parts[0] not in ("TCP", "UDP"):
+                continue
+            # UDP lines have no State column: 4 columns vs 5 for TCP.
+            min_cols = 4 if parts[0] == "UDP" else 5
+            if len(parts) < min_cols:
+                continue
+            if parts[1].endswith(":" + str(port)):
                 try:
                     pids.add(int(parts[-1]))
                 except ValueError:
@@ -244,7 +250,11 @@ class PortScanner:
         seen = set()
         for line in output.splitlines():
             parts = line.split()
-            if len(parts) < 5 or parts[0] not in ("TCP", "UDP"):
+            if not parts or parts[0] not in ("TCP", "UDP"):
+                continue
+            # UDP lines have no State column: 4 columns vs 5 for TCP.
+            min_cols = 4 if parts[0] == "UDP" else 5
+            if len(parts) < min_cols:
                 continue
             proto = parts[0]
             state = parts[3] if proto == "TCP" else "UDP"
