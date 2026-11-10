@@ -112,3 +112,47 @@ def test_kill_port_assume_yes_kills_all(fake_psutil):
     killed = PortScanner().kill_port(3000, assume_yes=True)
     assert killed is True
     assert fake_psutil.Process.call_count >= 2
+
+
+NETSTAT_OUTPUT = (
+    "Active Connections\r\n"
+    "\r\n"
+    "  Proto  Local Address          Foreign Address        State           PID\r\n"
+    "  TCP    0.0.0.0:3000           0.0.0.0:0              LISTENING       100\r\n"
+    "  TCP    127.0.0.1:54321        127.0.0.1:3000         ESTABLISHED     101\r\n"
+    "  UDP    0.0.0.0:500            *:*                                    200\r\n"
+)
+
+
+def _windows_scanner():
+    ps = PortScanner()
+    ps.system = "windows"
+    return ps
+
+
+def test_windows_lists_udp_with_all():
+    with mock.patch.object(scanner, "HAS_PSUTIL", False), \
+         mock.patch("subprocess.check_output",
+                    return_value=NETSTAT_OUTPUT.encode()):
+        entries = _windows_scanner().list_ports(show_all=True)
+    by_port = {e["port"]: e for e in entries}
+    assert 500 in by_port
+    assert by_port[500]["proto"] == "UDP"
+    assert by_port[500]["status"] == "UDP"
+    assert by_port[500]["pid"] == 200
+    assert by_port[3000]["status"] == "LISTENING"
+
+
+def test_windows_hides_udp_by_default():
+    with mock.patch.object(scanner, "HAS_PSUTIL", False), \
+         mock.patch("subprocess.check_output",
+                    return_value=NETSTAT_OUTPUT.encode()):
+        entries = _windows_scanner().list_ports()
+    assert [e["port"] for e in entries] == [3000]
+
+
+def test_windows_find_pids_includes_udp():
+    with mock.patch.object(scanner, "HAS_PSUTIL", False), \
+         mock.patch("subprocess.check_output",
+                    return_value=NETSTAT_OUTPUT.encode()):
+        assert _windows_scanner().find_pids_by_port(500) == [200]
