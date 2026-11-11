@@ -17,6 +17,19 @@ try:
 except ImportError:
     HAS_PSUTIL = False
 
+    class _PsutilStub:
+        """Placeholder so the ``psutil`` name always exists on this module.
+
+        Tests (and any third-party code) patch ``scanner.psutil`` with
+        ``mock.patch.object``; without this attribute those patches raise
+        ``AttributeError`` on systems where the optional psutil extra is
+        not installed. Production code never touches it: every psutil use
+        is guarded by ``HAS_PSUTIL``.
+        """
+        pass
+
+    psutil = _PsutilStub()
+
 
 _ENTRY_KEYS = ("port", "pid", "proto", "status", "name", "cmdline",
                "user", "memory", "threads")
